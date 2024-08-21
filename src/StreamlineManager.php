@@ -38,8 +38,15 @@ class StreamlineManager
         $request->validate([
             'stream' => 'required|string',
             'action' => 'required|string',
-            'params' => 'array',
+            'params' => ''// this is optional,
         ]);
+        if($request->has('params')) {
+            $params = $request->input('params');
+            if (!is_array($params)) {
+                $params = explode(',', $params);
+                $request->merge(['params' => $params]);
+            }
+        }
     }
 
     protected function convertStreamToClass(string $stream): string
