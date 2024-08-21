@@ -7,7 +7,7 @@ A laravel package that makes it possible to bind service/streamline class to fro
 ## Installation
 
 ```sh
-composer require iankibet/streamline
+composer require iankibet/laravel-streamline
 ```
 
 ## Config
