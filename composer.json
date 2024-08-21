@@ -1,0 +1,26 @@
+{
+    "name": "iankibet/laravel-streamline",
+    "description": "A package that allows front end to interact with backend without the need for routes and controller",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Iankibet\\Streamline\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Iankibet\\Streamline\\StreamlineServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Ian Kibet",
+            "email": "kibethosea8@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
