@@ -20,6 +20,11 @@ abstract  class StreamlineComponent
         return $this->toArray();
     }
 
+    protected function response($data, $status = 200)
+    {
+        abort(response($data, $status));
+    }
+
     protected function toArray()
     {
         // get public properties of the class instance then return them as an array
