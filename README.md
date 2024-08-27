@@ -39,3 +39,14 @@ This is the namespace where the service/streamline classes are located. The defa
 
 This is the postfix that is added to the vue component name to determine the service/streamline class to bind to the component. The default value is `Streamline`. For example, if the vue component name is `User`, the service/streamline class will be `UserStreamline`.
 
+## Implementation
+To use, first import the StreamlineComponent and extend it in yur class as show below:
+
+```php
+use iankibet\Streamline\StreamlineComponent;
+
+class TasksStreamline extends StreamlineComponent
+{
+
+}
+```
