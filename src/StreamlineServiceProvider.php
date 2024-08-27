@@ -2,6 +2,8 @@
 
 namespace Iankibet\Streamline;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class StreamlineServiceProvider extends ServiceProvider
