@@ -88,8 +88,11 @@ class StreamlineManager
          if (!$instance instanceof StreamlineComponent) {
             abort(404, 'Service class must implement StreamlineComponent');
          }
+         $reflectionClass = new \ReflectionClass($instance);
+         $classAttributes = $reflectionClass->getAttributes(StreamlinePermission::class);
         // check attributes for permission on the action
         $attributes = $reflection->getAttributes(StreamlinePermission::class);
+        $attributes = array_merge($attributes, $classAttributes);
         if (count($attributes) > 0) {
             $attribute = $attributes[0];
             $permissionSlugs = $attribute->getArguments();
