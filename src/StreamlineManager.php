@@ -94,12 +94,13 @@ class StreamlineManager
         $attributes = $reflection->getAttributes(StreamlinePermission::class);
         $attributes = array_merge($attributes, $classAttributes);
         if (count($attributes) > 0) {
-            $attribute = $attributes[0];
-            $permissionSlugs = $attribute->getArguments();
-            foreach ($permissionSlugs as $permissionSlug) {
-                $user = \request()->user();
-                if (!$user->can($permissionSlug)) {
-                    abort(403, 'Unauthorized: ' . $permissionSlug);
+            foreach ($attributes as $attribute) {
+                $permissionSlugs = $attribute->getArguments();
+                foreach ($permissionSlugs as $permissionSlug) {
+                    $user = \request()->user();
+                    if (!$user->can($permissionSlug)) {
+                        abort(403, 'Unauthorized: ' . $permissionSlug);
+                    }
                 }
             }
         }
