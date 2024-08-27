@@ -1,6 +1,7 @@
 <?php
 namespace Iankibet\Streamline;
 
+use Iankibet\Streamline\Permissions\StreamlinePermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -87,7 +88,18 @@ class StreamlineManager
          if (!$instance instanceof StreamlineComponent) {
             abort(404, 'Service class must implement StreamlineComponent');
          }
-
+        // check attributes for permission on the action
+        $attributes = $reflection->getAttributes(StreamlinePermission::class);
+        if (count($attributes) > 0) {
+            $attribute = $attributes[0];
+            $permissionSlugs = $attribute->getArguments();
+            foreach ($permissionSlugs as $permissionSlug) {
+                $user = \request()->user();
+                if (!$user->can($permissionSlug)) {
+                    abort(403, 'Unauthorized: ' . $permissionSlug);
+                }
+            }
+        }
         return $instance->$action(...array_values($params));
     }
 }
