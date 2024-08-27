@@ -14,7 +14,7 @@ class StreamlineServiceProvider extends ServiceProvider
         //
         $this->publishes([
             __DIR__.'/../config/streamline.php' => config_path('streamline.php'),
-        ], ['streamline', 'streamline:config']);
+        ], ['laravel-streamline']);
 
     }
 

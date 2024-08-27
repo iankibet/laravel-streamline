@@ -15,7 +15,7 @@ composer require iankibet/laravel-streamline
 Streamline uses a config file to determine the namespace of the service/streamline classes. To publish the config file, run the following command:
 
 ```sh
-php artisan vendor:publish --tag=streamline-config
+php artisan vendor:publish --tag=laravel-streamline
 ```
 
 Here is how the config file looks like:
