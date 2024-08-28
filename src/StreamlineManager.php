@@ -1,4 +1,5 @@
 <?php
+
 namespace Iankibet\Streamline;
 
 use Iankibet\Streamline\Permissions\StreamlinePermission;
@@ -16,7 +17,7 @@ class StreamlineManager
 
         if (!class_exists($class)) {
             $error = 'Service class not found';
-            if(app()->environment('local')) {
+            if (app()->environment('local')) {
                 $error .= ' - ' . $class;
             }
             abort(404, $error);
@@ -41,7 +42,7 @@ class StreamlineManager
             'action' => 'required|string',
             'params' => ''// this is optional,
         ]);
-        if($request->has('params')) {
+        if ($request->has('params')) {
             $params = $request->input('params');
             if (!is_array($params)) {
                 $params = explode(',', $params);
@@ -71,25 +72,23 @@ class StreamlineManager
 
     protected function invokeAction($instance, string $action, array $params)
     {
-        if(app()->environment('local')) {
-            // Check if the required parameters are provided, Reflection is slow so only do this in local environment for debugging
-            $reflection = new \ReflectionMethod($instance, $action);
-            $requiredParams = $reflection->getNumberOfRequiredParameters();
-            if (count($params) < $requiredParams) {
-                $missingParams = array_diff(
-                    array_map(fn($param) => $param->getName(), $reflection->getParameters()),
-                    array_keys($params)
-                );
+        // Check if the required parameters are provided, Reflection is slow so only do this in local environment for debugging
+        $reflection = new \ReflectionMethod($instance, $action);
+        $requiredParams = $reflection->getNumberOfRequiredParameters();
+        if (count($params) < $requiredParams) {
+            $missingParams = array_diff(
+                array_map(fn($param) => $param->getName(), $reflection->getParameters()),
+                array_keys($params)
+            );
 
-                abort(400, 'Missing required parameters: ' . implode(', ', $missingParams));
-            }
+            abort(400, 'Missing required parameters: ' . implode(', ', $missingParams));
         }
         // check if instance implements StreamlineComponent
-         if (!$instance instanceof StreamlineComponent) {
+        if (!$instance instanceof StreamlineComponent) {
             abort(404, 'Service class must implement StreamlineComponent');
-         }
-         $reflectionClass = new \ReflectionClass($instance);
-         $classAttributes = $reflectionClass->getAttributes(StreamlinePermission::class);
+        }
+        $reflectionClass = new \ReflectionClass($instance);
+        $classAttributes = $reflectionClass->getAttributes(StreamlinePermission::class);
         // check attributes for permission on the action
         $attributes = $reflection->getAttributes(StreamlinePermission::class);
         $attributes = array_merge($attributes, $classAttributes);
