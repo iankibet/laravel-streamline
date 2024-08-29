@@ -3,15 +3,45 @@
 namespace Iankibet\Streamline;
 
 
-abstract  class StreamlineComponent
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+abstract  class Component
 {
+    protected $isTesting = false;
+
+    protected $authenticatedUser;
     protected $rules = [];
+    protected $requestData = [];
+
+
+    public function setRequestData(array $data)
+    {
+        $this->requestData = $data;
+    }
+
+    /**
+     * @param mixed $authenticatedUser
+     */
+    public function setAuthenticatedUser($authenticatedUser): void
+    {
+        Auth::login($authenticatedUser);
+    }
+
+    public function asUser($user){
+        Auth::login($user);
+        return $this;
+    }
     public function validate($rules = [])
     {
         if(empty($rules)){
             $rules = $this->rules;
         }
-        return request()->validate($rules);
+        $validator = validator($this->requestData, $rules);
+        if ($validator->fails()) {
+            $this->response($validator->errors(), 422);
+        }
+        return $validator->validated();
     }
 
     public function onMounted()
