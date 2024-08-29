@@ -1,9 +1,10 @@
 <?php
 
-namespace Iankibet\Streamline\Support;
+namespace Iankibet\Streamline\Features\Streamline;
 
 use Iankibet\Streamline\Attributes\Permission;
 use Iankibet\Streamline\Component;
+use Iankibet\Streamline\Features\Support\StreamlineSupport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,8 +14,7 @@ class HandleStreamlineRequest
     {
         $this->validateRequest($request);
 
-        $stream = $this->convertStreamToClass($request->input('stream'));
-        $class = $this->getServiceClass($stream);
+        $class = StreamlineSupport::convertStreamToClass($request->input('stream'));
 
         if (!class_exists($class)) {
             $error = 'Service class not found';
@@ -54,25 +54,6 @@ class HandleStreamlineRequest
                 $request->merge(['params' => $params]);
             }
         }
-    }
-
-    protected function convertStreamToClass(string $stream): string
-    {
-        $streamCollection = collect(explode('/', $stream));
-
-        return $streamCollection->map(function ($item) {
-            return Str::studly(str_replace('-', ' ', $item));
-        })->implode('\\');
-    }
-
-    protected function getServiceClass(string $stream): string
-    {
-        $classPostfix = config('streamline.class_postfix', '');
-        if (str_ends_with($stream, $classPostfix)) {
-            $classPostfix = '';
-        }
-
-        return config('streamline.class_namespace') . '\\' . $stream . $classPostfix;
     }
 
     protected function invokeAction($instance, string $action, array $params)

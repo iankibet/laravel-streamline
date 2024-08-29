@@ -1,6 +1,6 @@
 <?php
 
-namespace Iankibet\Streamline\Features\SupportTesting;
+namespace Iankibet\Streamline\Features\Testing;
 
 class Testable
 {

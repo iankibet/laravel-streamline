@@ -23,6 +23,7 @@ class StreamlineServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+        $this->registerCommands();
         $this->loadRoutesFrom(__DIR__.'/../routes/streamline.route.php');
     }
 
@@ -39,5 +40,12 @@ class StreamlineServiceProvider extends ServiceProvider
             return new StreamlineManager();
         });
         $this->app->alias('streamline', StreamlineManager::class);
+    }
+
+    protected function registerCommands(): void
+    {
+        $this->commands([
+            Features\Commands\TestComponent::class,
+        ]);
     }
 }

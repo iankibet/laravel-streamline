@@ -2,7 +2,7 @@
 
 namespace Iankibet\Streamline;
 
-use Iankibet\Streamline\Features\SupportTesting\Testable;
+use Iankibet\Streamline\Features\Testing\Testable;
 
 class StreamlineManager
 {
