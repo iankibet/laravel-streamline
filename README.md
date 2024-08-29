@@ -43,9 +43,9 @@ This is the postfix that is added to the vue component name to determine the ser
 To use, first import the StreamlineComponent and extend it in yur class as show below:
 
 ```php
-use iankibet\Streamline\StreamlineComponent;
+use iankibet\Streamline\Component;
 
-class TasksStreamline extends StreamlineComponent
+class TasksStreamline extends Component
 {
 
 }

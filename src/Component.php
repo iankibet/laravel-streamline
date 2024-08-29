@@ -3,7 +3,7 @@
 namespace Iankibet\Streamline;
 
 
-abstract  class StreamlineComponent
+abstract  class Component
 {
     protected $rules = [];
     public function validate($rules = [])
