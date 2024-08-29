@@ -13,11 +13,8 @@ class StreamlineServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-        $this->publishes([
-            __DIR__.'/../config/streamline.php' => config_path('streamline.php'),
-        ], ['laravel-streamline']);
-
+        $this->registerSingleton();
+        $this->registerConfig();
     }
 
     /**
@@ -27,5 +24,20 @@ class StreamlineServiceProvider extends ServiceProvider
     {
         //
         $this->loadRoutesFrom(__DIR__.'/../routes/streamline.route.php');
+    }
+
+    protected function registerConfig(): void
+    {
+        $this->publishes([
+            __DIR__.'/../config/streamline.php' => config_path('streamline.php'),
+        ], ['laravel-streamline']);
+    }
+
+    protected function registerSingleton(): void
+    {
+        $this->app->singleton('streamline', function ($app) {
+            return new StreamlineManager();
+        });
+        $this->app->alias('streamline', StreamlineManager::class);
     }
 }

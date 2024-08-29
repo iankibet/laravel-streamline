@@ -4,7 +4,10 @@ namespace Iankibet\Streamline;
 
 use Illuminate\Support\Facades\Facade;
 
-//void static function test()
+/**
+ * @see \Iankibet\Streamline\StreamlineManager
+ * @method static test(string $name)
+ */
 class Streamline extends Facade
 {
 

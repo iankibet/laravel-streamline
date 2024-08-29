@@ -28,7 +28,11 @@ class HandleStreamlineRequest
         $params = $request->input('params', []);
 
         $instance = app($class);
-
+        $requestData = $request->all();
+        // remove action and params from request data
+        unset($requestData['action']);
+        unset($requestData['params']);
+        $instance->setRequestData($requestData);
         if (!method_exists($instance, $action)) {
             abort(404, 'Action not found');
         }
