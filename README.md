@@ -50,3 +50,52 @@ class TasksStreamline extends Component
 
 }
 ```
+
+### Validation
+To validate, use Validate attribute as shown below:
+
+```php
+use iankibet\Streamline\Component;
+use iankibet\Streamline\Validate;
+
+// in the method
+
+#[Validate([
+        'name' => 'required|string',
+        'description' => 'required|string'
+    ])]
+    public function addTask()
+    {
+        // code here
+        $data = $this->only(['name', 'description']);
+    }
+}
+```
+
+### Authorization
+
+To authorize, use Permission attribute as shown below:
+
+```php
+use iankibet\Streamline\Component;
+use iankibet\Streamline\Permission;
+
+// in the method
+
+#[Permission('create-task')]
+
+    public function addTask()
+    {
+        // code here
+        $data = $this->only(['name', 'description']);
+    }
+}
+```
+
+### Testing the component
+
+To test the component, use the following command: Replace `TasksStreamline` with the name of your component.
+
+```sh
+php artisan streamline:test TasksStreamline
+```
