@@ -51,13 +51,13 @@ class TestComponent extends Command
             $data = $this->askRequestData(array_keys($rules));
             $instance->setRequestData($data);
         }
-        if($this->confirm('Do you want to test as authenticated user?')){
-            $user = $this->ask('Enter user id');
-            $user = User::find($user);
+        if($userId = $this->ask('Which user do you want to test as, Enter user id')){
+            $user = User::find($userId);
             if(!$user){
                 $this->error('User not found');
                 return;
             }
+            $this->info('Testing as user: '.$user->name);
             $instance->setAuthenticatedUser($user);
             auth()->login($user);
         }

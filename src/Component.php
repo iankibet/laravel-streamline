@@ -78,6 +78,9 @@ abstract  class Component
 
     protected function response($data, $status = 200)
     {
+        if(app()->runningInConsole()){
+            dd($data);
+        }
         abort(response($data, $status));
     }
 
