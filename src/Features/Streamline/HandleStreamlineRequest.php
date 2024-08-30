@@ -28,6 +28,7 @@ class HandleStreamlineRequest
         $params = $request->input('params', []);
 
         $instance = app($class);
+        $instance->setAction($action);
         $requestData = $request->all();
         // remove action and params from request data
         unset($requestData['action']);
@@ -80,7 +81,8 @@ class HandleStreamlineRequest
         $attributes = array_merge($attributes, $classAttributes);
         if (count($attributes) > 0) {
             foreach ($attributes as $attribute) {
-                $permissionSlugs = $attribute->getArguments();
+                $permissionInstance = $attribute->newInstance();
+                $permissionSlugs = $permissionInstance->getPermissions();
                 foreach ($permissionSlugs as $permissionSlug) {
                     $user = \request()->user();
                     if (!$user->can($permissionSlug)) {

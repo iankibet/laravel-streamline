@@ -3,6 +3,7 @@
 namespace Iankibet\Streamline\Features\Commands;
 
 use App\Models\User;
+use Iankibet\Streamline\Attributes\Validate;
 use Iankibet\Streamline\Features\Support\StreamlineSupport;
 use Illuminate\Console\Command;
 
@@ -37,12 +38,17 @@ class TestComponent extends Command
 
         // using reflection class, we check if the action exists in the class and the arguments it requires
         $reflection = new \ReflectionMethod($class, $action);
+        $instance->setAction($action);
         $params = [];
         foreach ($reflection->getParameters() as $parameter) {
             $params[] = $this->ask($parameter->getName());
         }
-        if($this->confirm('Do you want to add request data?')){
-            $data = $this->askRequestData();
+        // check if we have Validate attribute
+        $attributes = $reflection->getAttributes(Validate::class);
+        if (!empty($attributes)) {
+            $validationClass = $attributes[0]->newInstance();
+            $rules = $validationClass->getRules();
+            $data = $this->askRequestData(array_keys($rules));
             $instance->setRequestData($data);
         }
         if($this->confirm('Do you want to test as authenticated user?')){
@@ -59,14 +65,12 @@ class TestComponent extends Command
         dd($response);
     }
 
-    protected function askRequestData(){
+    protected function askRequestData($rules){
         $data = [];
-        $asking = true;
-        while ($asking){
-            $key = $this->ask('Enter key');
-            $value = $this->ask('Enter value');
-            $data[$key] = $value;
-            $asking = $this->confirm('Add more data?');
+        $this->info("Enter data for the following fields, press enter to skip");
+        foreach ($rules as $rule){
+            $value = $this->ask($rule);
+            $data[$rule] = $value;
         }
         return $data;
     }

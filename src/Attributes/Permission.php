@@ -4,11 +4,17 @@ namespace Iankibet\Streamline\Attributes;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS, Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_ALL)]
 class Permission
 {
-    public function __construct(protected $permission)
+    protected $permissions = [];
+    public function __construct(...$args)
     {
+        $this->permissions = $args;
+    }
+
+    public function getPermissions(){
+        return $this->permissions;
     }
 
 }
