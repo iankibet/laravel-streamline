@@ -64,7 +64,12 @@ abstract  class Component
         return $validator->validated();
     }
 
-    public function only($keys)
+    public function validated($rules = null)
+    {
+        return $this->validate($rules);
+    }
+
+    public function only($keys = [])
     {
         $data = $this->validate();
         return collect($data)->only($keys)->toArray();
