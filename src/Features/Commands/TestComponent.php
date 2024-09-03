@@ -4,6 +4,7 @@ namespace Iankibet\Streamline\Features\Commands;
 
 use App\Models\User;
 use Iankibet\Streamline\Attributes\Validate;
+use Iankibet\Streamline\Component;
 use Iankibet\Streamline\Features\Support\StreamlineSupport;
 use Illuminate\Console\Command;
 
@@ -14,14 +15,14 @@ class TestComponent extends Command
      *
      * @var string
      */
-    protected $signature = 'streamline:test-component {component}';
+    protected $signature = 'streamline:test-component {component?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Test a streamline component';
 
     /**
      * Execute the console command.
@@ -31,14 +32,26 @@ class TestComponent extends Command
     {
         //
         $component = $this->argument('component');
+        if(!$component){
+            $classes = StreamlineSupport::getStreamlineClasses();
+            $component = $this->anticipate('Enter Component', $classes);
+        }
         $class = StreamlineSupport::convertStreamToClass($component);
+
         $instance = app($class);
-
-        $action = $this->ask('Enter action');
-
-        // using reflection class, we check if the action exists in the class and the arguments it requires
-        $reflection = new \ReflectionMethod($class, $action);
+        if(!$instance instanceof  Component){
+            $this->error('Service class must implement streamline Component');
+            exit;
+        }
+        $classReflection = new \ReflectionClass($class);
+        //check if class extends Component
+        $methods = $classReflection->getMethods();
+        $methodsArr = collect($methods)->map(function ($method){
+            return $method->name;
+        })->toArray();
+        $action = $this->anticipate('Enter action', $methodsArr);
         $instance->setAction($action);
+        $reflection =  new \ReflectionMethod($class, $action);
         $params = [];
         foreach ($reflection->getParameters() as $parameter) {
             $params[] = $this->ask($parameter->getName());
