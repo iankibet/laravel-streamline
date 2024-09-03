@@ -1,0 +1,26 @@
+{
+    "main": "{permissionName}s",
+    "roles": [
+        "admin"
+    ],
+    "children": {
+        "list": {
+            "main": "list",
+            "roles": [
+                "admin"
+            ]
+        },
+        "upsert": {
+            "main": "upsert",
+            "roles": [
+                "admin"
+            ]
+        },
+        "delete": {
+            "main": "delete",
+            "roles": [
+                "admin"
+            ]
+        }
+    }
+}

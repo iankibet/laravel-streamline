@@ -1,0 +1,58 @@
+
+    public $counts=[
+        '{umodel}s'=>0
+    ];
+    public function __construct()
+    {
+        $this->counts['{umodel}s'] = {umodel}::count();
+    }
+    #[StreamlinePermission('{umodel}s.upsert')]
+    public function upsert{umodel}() {
+        $this->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
+        $data = $this->requestData;
+        $data['venue_id'] = 1;
+        if (isset($data['id'])) {
+            ${umodel} = {umodel}::find($data['id']);
+            if (!${umodel}) {
+                return response([
+                    'message' => '{umodel} not found'
+                ]);
+            }
+            ${umodel}->update($data);
+            return response([
+                'message' => '{umodel} updated successfully',
+                '{umodel}' => ${umodel}
+            ]);
+        }
+        ${umodel} = {umodel}::create($data);
+        return response([
+            'message' => '{umodel} added successfully',
+            '{umodel}' => ${umodel}
+        ]);
+    }
+    #[StreamlinePermission('{umodel}s.list')]
+    public function list{umodel}s()
+    {
+        $query = {umodel}::query();
+        return SearchRepo::of($query)->response();
+    }
+    #[StreamlinePermission('{umodel}s.remove')]
+    public function delete{umodel}($id)
+    {
+        ${umodel} = {umodel}::find($id);
+        if (!${umodel}) {
+            return response([
+                'status' => 'failed',
+                'message' => '{umodel} not found'
+            ], 404);
+        }
+        ${umodel}->delete();
+        return response([
+            'message' => '{umodel} deleted successfully'
+        ]);
+    }
