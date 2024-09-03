@@ -96,7 +96,6 @@ class GenererateModelService extends Command
             'name' => $this->real_model,
             '-m' => true
         ]);
-
         $model_path = app_path("Models/" . $this->real_model . '.php');
         $model_content = file_get_contents($model_path);
         $model_array = explode('use HasFactory;', $model_content);
@@ -216,7 +215,6 @@ class GenererateModelService extends Command
         if(in_array($field_name,$doubles))
             return 'double';
         return 'string';
-
     }
     public function createFactory()
     {
@@ -239,7 +237,6 @@ class GenererateModelService extends Command
             $this->error("Invalid factory content format. Could not find 'return [' in the factory file.");
             return;
         }
-
         $this->factoryContent();
         $current_factory_content = 'return [ ' . implode(',', $this->factory_field) . "\n\t\t";
         $new_factory_contents = $pre_factory_content . $current_factory_content . $post_factory_content;
@@ -282,11 +279,9 @@ class GenererateModelService extends Command
         $seeder_name = last($model_namespace) . 'Seeder';
         $path = "seeders/$seeder_name" . ".php";
         $amount = $this->factory_amount;
-
         Artisan::call("make:seeder", [
             'name' => $seeder_name
         ]);
-
         $seed_path = database_path($path);
         $seed_content = file_get_contents($seed_path);
         $seed_array = explode('//', $seed_content);
@@ -294,13 +289,11 @@ class GenererateModelService extends Command
             $this->error("Unexpected seeder content format. The '//' separator was not found.");
             return;
         }
-
         $pre_seed_content = $seed_array[0];
         $post_seed_content = $seed_array[1];
         $namespace = implode("\\", $model_namespace);
         $seed_namespace = "\App\Models\\" . $namespace . "::factory($amount)->create();";
         $new_seed_content = $pre_seed_content . $seed_namespace . $post_seed_content;
-
         file_put_contents($seed_path, $new_seed_content);
         $this->info("Seeder created: " );
     }
