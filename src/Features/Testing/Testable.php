@@ -22,6 +22,7 @@ class Testable
 
     public function call(string $method, array $params = [])
     {
+        $this->instance->setAction($method);
         return $this->instance->{$method}(...$params);
     }
 }
