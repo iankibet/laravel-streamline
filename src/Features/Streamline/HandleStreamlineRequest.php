@@ -3,6 +3,7 @@
 namespace Iankibet\Streamline\Features\Streamline;
 
 use Iankibet\Streamline\Attributes\Permission;
+use Iankibet\Streamline\Attributes\Validate;
 use Iankibet\Streamline\Component;
 use Iankibet\Streamline\Features\Support\StreamlineSupport;
 use Illuminate\Http\Request;
@@ -73,6 +74,11 @@ class HandleStreamlineRequest
         // check if instance implements StreamlineComponent
         if (!$instance instanceof Component) {
             abort(404, 'Service class must implement streamline Component');
+        }
+        // check if action has Validate attribute
+        $validateAttributes = $reflection->getAttributes(Validate::class);
+        if (count($validateAttributes) > 0) {
+            $instance->validate();
         }
         $reflectionClass = new \ReflectionClass($instance);
         $classAttributes = $reflectionClass->getAttributes(Permission::class);
