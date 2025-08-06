@@ -174,7 +174,7 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         if (count($validateAttributes) > 0) {
             $instance->validate();
         }
-        $params = array_filter(array_values($params));
+//        $params = array_filter(array_values($params));
         $parameters = $reflection->getParameters();
 
         // Resolve each parameter (either from the container or provided manually)
@@ -190,9 +190,8 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
                 // Use the default value if available
                 $resolvedParams[] = $parameter->getDefaultValue();
 
-//            } else {
-                // Throw an exception if a required parameter is missing
-//                throw new \InvalidArgumentException("Missing required parameter [{$parameter->getName()}] for [{$class}].");
+            } else {
+                $resolvedParams[] = null; // If no default value, set to null
             }
         }
         return $instance->$action(...$resolvedParams);
