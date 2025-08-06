@@ -36,7 +36,9 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         if(!$remainingArgs){
             $action = 'onMounted';
         } else {
-            $action = array_pop($remainingArgs);
+            $action = array_values($remainingArgs)[0];
+            $remainingArgs = array_values($remainingArgs);
+            unset($remainingArgs[0]);
         }
         $action = Str::studly($action);
         // lowercase first letter
