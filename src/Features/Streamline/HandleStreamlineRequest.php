@@ -17,7 +17,8 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
 
     protected $classReflection;
 
-    public function handleFlatRequest(){
+    public function handleFlatRequest()
+    {
         $args = func_get_args();
         // e.g users/user/1 results in users stream, user function
         // users/list-active results in users stream listActive
@@ -28,12 +29,12 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
             $streamArr[] = $arg;
             $streamStr = implode('/', $streamArr);
             $class = StreamlineSupport::convertStreamToClass($streamStr);
-            if(class_exists($class)){
+            if (class_exists($class)) {
                 break;
             }
         }
         $remainingArgs = array_diff($args, $streamArr);
-        if(!$remainingArgs){
+        if (!$remainingArgs) {
             $action = 'onMounted';
         } else {
             $action = array_values($remainingArgs)[0];
@@ -44,8 +45,8 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         // lowercase first letter
         $action = lcfirst($action);
         \request()->merge([
-            'stream'=>$streamStr,
-            'action'=>$action,
+            'stream' => $streamStr,
+            'action' => $action,
             'params' => $remainingArgs
         ]);
         return $this->handleRequest(request());
@@ -72,10 +73,10 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
             abort(404, $error);
         }
 
-        $action = $request->input('action','onMounted');
+        $action = $request->input('action', 'onMounted');
         $params = $request->input('params', []);
         $constructorParams = [];
-        if(!$action || $action == 'onMounted'){
+        if (!$action || $action == 'onMounted') {
             $constructorParams = $params;
         }
 //        $instance = new $class(...$constructorParams);
@@ -176,7 +177,12 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         if (count($validateAttributes) > 0) {
             $instance->validate();
         }
-//        $params = array_filter(array_values($params));
+        // Remove trailing nulls from params
+        // This is to ensure that if the last parameter is null, it is not passed to
+        if (count($params) > 0 && end($params) == null) {
+            array_pop($params);
+        }
+        $params = array_values($params); // reindex the array
         $parameters = $reflection->getParameters();
 
         // Resolve each parameter (either from the container or provided manually)
