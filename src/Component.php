@@ -89,19 +89,14 @@ abstract  class Component
     protected function toArray()
     {
         // get public properties of the class instance then return them as an array
-        $data = [];
         $classVars = call_user_func('get_object_vars', $this);
         // remove the rules property
-        unset($classVars['rules']);
-        // get all the public functions of the class instance
-        $methods = get_class_methods($this);
-        $data['methods'] = [];
-        $data['properties'] = $classVars;
-        foreach ($methods as $method) {
-            if ($method !== 'toArray' && $method !== 'onMounted') {
-                $data['methods'][] = $method;
-            }
+        $exclude = ['rules', 'isTesting', 'authenticatedUser', 'requestData', 'action'];
+        foreach ($exclude as $key) {
+            unset($classVars[$key]);
         }
+        $data = [];
+        $data['properties'] = $classVars;
         return $data;
     }
 }

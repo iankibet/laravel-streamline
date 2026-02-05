@@ -75,8 +75,11 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
 
         $action = $request->input('action', 'onMounted');
         $params = $request->input('params', []);
+        $initialParams = $request->input('initialParams', []);
         $constructorParams = [];
-        if (!$action || $action == 'onMounted') {
+        if ($initialParams) {
+            $constructorParams = $initialParams;
+        } elseif (!$action || $action == 'onMounted') {
             $constructorParams = $params;
         }
 //        $instance = new $class(...$constructorParams);
@@ -86,6 +89,7 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         // remove action and params from request data
         unset($requestData['action']);
         unset($requestData['params']);
+        unset($requestData['initialParams']);
         $instance->setRequestData($requestData);
         if (!method_exists($instance, $action)) {
             abort(404, 'Action not found');
@@ -121,6 +125,7 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
                     throw new \InvalidArgumentException("Missing required parameter [{$parameter->getName()}] for [{$class}].");
                 }
             }
+            
 
             // Return an instance of the class with resolved parameters
             return $reflection->newInstanceArgs($resolvedParams);
@@ -135,7 +140,8 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         $request->validate([
             'stream' => 'required|string',
             'action' => 'nullable|string',
-            'params' => ''// this is optional,
+            'params' => '',// this is optional,
+            'initialParams' => ''
         ]);
         if ($request->has('params')) {
             $params = $request->input('params');
@@ -190,7 +196,11 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         foreach ($parameters as $index => $parameter) {
             if (isset($params[$index])) {
                 // Use the provided indexed parameter
-                $resolvedParams[] = $params[$index];
+                $val = $params[$index];
+                if (is_array($val) && isset($val[$parameter->getName()])) {
+                    $val = $val[$parameter->getName()];
+                }
+                $resolvedParams[] = $val;
             } elseif ($parameter->getType() && !$parameter->getType()->isBuiltin()) {
                 // Resolve class dependencies via the container
                 $resolvedParams[] = app($parameter->getType()->getName());
