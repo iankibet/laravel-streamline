@@ -146,7 +146,10 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
         if ($request->has('params')) {
             $params = $request->input('params');
             if (!is_array($params)) {
-                $params = explode(',', $params);
+                $decodedParams = json_decode($params, true);
+                $params = json_last_error() === JSON_ERROR_NONE && is_array($decodedParams)
+                    ? $decodedParams
+                    : explode(',', $params);
                 $request->merge(['params' => $params]);
             }
         }

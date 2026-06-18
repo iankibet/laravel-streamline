@@ -3,7 +3,7 @@
     "description": "A package that allows front end to interact with backend without the need for routes and controller",
     "type": "library",
     "license": "MIT",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "autoload": {
         "psr-4": {
             "Iankibet\\Streamline\\": "src/"
