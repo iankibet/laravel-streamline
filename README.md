@@ -39,12 +39,23 @@ return [
     'guest_streams' => [
         'auth/auth'
     ],
+    'guest_classes' => [],
     // Hides these properties from the frontend
     'exclude_properties' => [
         'rules', 'isTesting', 'authenticatedUser', 'requestData', 'action'
     ]
 ];
 ```
+
+`middleware` is applied **per request** by `StreamlineGate` (a constant entry in the
+controller's middleware list), so guest-vs-auth is decided fresh every request —
+safe under Octane and route caching. `guest_streams` matches the slug,
+`guest_classes` the resolved Stream FQCN; both work on the body route and the flat
+route.
+
+> **1.3.0** — moved auth to the per-request `StreamlineGate`. If you publish a
+> custom `guest` middleware for guest streams, note they now simply pass through
+> (no `guest` middleware) — matching API expectations.
 
 ## 🛠 Basic Usage
 

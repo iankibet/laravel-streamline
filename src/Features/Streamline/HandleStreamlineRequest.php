@@ -54,16 +54,10 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
 
     public function handleRequest(Request $request)
     {
-        $middleware = config('streamline.middleware', []);
-        $this->middleware($middleware);
+        // Auth is enforced per request by StreamlineGate (see middleware()).
         $this->validateRequest($request);
 
         $class = StreamlineSupport::convertStreamToClass($request->input('stream'));
-
-        $guestClasses = config('streamline.guest_classes', []);
-        if (in_array($class, $guestClasses)) {
-            $this->middleware('guest');
-        }
 
         if (!class_exists($class)) {
             $error = 'Stream class not found';
@@ -220,15 +214,12 @@ class HandleStreamlineRequest extends Controller implements HasMiddleware
 
     /**
      * Get the middleware that should be assigned to the controller.
+     *
+     * This list is memoised on the Route, so it must be constant. The real
+     * guest-vs-auth decision happens per request inside StreamlineGate.
      */
     public static function middleware(): array
     {
-        $stream = \request('stream');
-        $guestStream = config('streamline.guest_streams', []);
-        if (in_array($stream, $guestStream)) {
-            return ['guest'];
-        }
-        $middleware = config('streamline.middleware', []);
-        return $middleware;
+        return [StreamlineGate::class];
     }
 }
